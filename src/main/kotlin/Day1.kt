@@ -1,3 +1,5 @@
+import java.lang.Math.floorDiv
+
 class Day1: Task {
     override fun solve_part1(): Any {
         val input = readInput("Day1")
@@ -28,16 +30,17 @@ class Day1: Task {
             val direction = i.first()
             val steps = i.substring(1).toInt()
 
-            for (j in 1..steps) {
-                current = when (direction) {
-                    'R' -> (current + 1)
-                    else -> (current - 1)
-                }
-                current = current.mod(100)
-                if (current == 0) {
-                    answer++
-                }
+            val delta = if (direction == 'R') steps else -steps
+            val next = current + delta
+
+            val crossings = when {
+                delta > 0 -> floorDiv(next, 100) - floorDiv(current, 100)
+                delta < 0 -> floorDiv(current - 1, 100) - floorDiv(next - 1, 100)
+                else -> 0
             }
+
+            answer += crossings
+            current = next.mod(100)
         }
 
         return answer
