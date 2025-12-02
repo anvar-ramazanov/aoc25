@@ -1,55 +1,28 @@
 class Day2 : Task {
     override fun solve_part1(): Any {
-        val input = readInput("Day2")
-
-        val ranges = input
-            .first()
-            .split(",")
-            .map { it.split("-").let { Range(it[0].toLong(), it[1].toLong())} }
-
-        var answer: Long = 0
-
-        for (range in ranges) {
-            for (i in range.min..range.max) {
-                val str = i.toString()
-                if (str.length % 2 == 0) {
-                    val firstHalf = str.substring(0, str.length / 2)
-                    val secondHalf = str.substring(str.length / 2)
-                    if (firstHalf == secondHalf) {
-                        answer += i
-                    }
-                }
-            }
-        }
-
-        return answer
+        val ranges = parseRanges(readInput("Day2"))
+        return solve(ranges, Regex("^(.+)\\1$"))
     }
 
     override fun solve_part2(): Any {
-        val input = readInput("Day2")
+        val ranges = parseRanges(readInput("Day2"))
+        return solve(ranges, Regex("^(.+)\\1+$"))
+    }
 
-        val ranges = input
-            .first()
-            .split(",")
-            .map { it.split("-").let { Range(it[0].toLong(), it[1].toLong())} }
+    private fun solve(ranges: List<Range>, pattern: Regex): Long {
+        return ranges.sumOf { range ->
+            (range.min..range.max)
+                .filter { it.toString().matches(pattern) }
+                .sum()
+        }
+    }
 
-        var answer: Long = 0
-
-        for (range in ranges) {
-            for (i in range.min..range.max) {
-                val str = i.toString()
-                if (hasRepeatingPattern(str)) answer += i
-            }
+    fun parseRanges(input: List<String>): List<Range> =  input
+        .first()
+        .split(",")
+        .map {
+            it.split("-").let { str -> Range(str[0].toLong(), str[1].toLong())}
         }
 
-        return answer
-    }
-
-    fun hasRepeatingPattern(str: String): Boolean {
-        return str.matches(Regex("^(.+)\\1+$"))
-    }
+    data class Range(val min: Long, val max: Long)
 }
-
-
-
-data class Range(val min: Long, val max: Long)
