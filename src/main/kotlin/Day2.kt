@@ -26,9 +26,30 @@ class Day2 : Task {
     }
 
     override fun solve_part2(): Any {
-        return 0
+        val input = readInput("Day2")
+
+        val ranges = input
+            .first()
+            .split(",")
+            .map { it.split("-").let { Range(it[0].toLong(), it[1].toLong())} }
+
+        var answer: Long = 0
+
+        for (range in ranges) {
+            for (i in range.min..range.max) {
+                val str = i.toString()
+                if (hasRepeatingPattern(str)) answer += i
+            }
+        }
+
+        return answer
+    }
+
+    fun hasRepeatingPattern(str: String): Boolean {
+        return str.matches(Regex("^(.+)\\1+$"))
     }
 }
+
 
 
 data class Range(val min: Long, val max: Long)
