@@ -28,7 +28,39 @@ class Day3 : Task {
     }
 
     override fun solve_part2(): Any {
-        return 0
+        return readInput("Day3")
+            .sumOf { getJoltage2(it, 12) }
     }
 
+    private fun getJoltage2(line: String, l: Int): Long {
+        val accumulator = mutableListOf<Char>()
+        val len = line.length
+
+
+        var left = line[len - l]
+        var prevInd = len - l
+
+        for (i in len - l downTo 0) {
+            if (line[i] >= left) {
+               left = line[i]
+                prevInd = i
+            }
+        }
+        accumulator.add(left)
+
+        while (accumulator.size < l) {
+            var cur = line[prevInd + 1]
+            var curInd = prevInd + 1
+            for (i in prevInd + 1 .. len - (l - accumulator.size)) {
+                if (line[i] > cur) {
+                    cur = line[i]
+                    curInd = i
+                }
+            }
+            accumulator.add(cur)
+            prevInd = curInd
+        }
+
+        return accumulator.joinToString("").toLong()
+    }
 }
