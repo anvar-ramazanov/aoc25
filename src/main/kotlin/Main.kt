@@ -2,11 +2,12 @@ package org.example
 
 import Day1
 import Day2
+import Day3
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 fun main() {
-    val task = Day2()
+    val task = Day3()
 
     val answer_part1 = task.solve_part1()
     val answer_part2 = task.solve_part2()
