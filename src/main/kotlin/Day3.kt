@@ -23,12 +23,10 @@ class Day3 : Task {
                 val remainingSlots = maxSlots - size
                 val searchRange = (prevIndex + 1)..(line.length - remainingSlots)
 
-                val (maxChar, maxIndex) = searchRange
-                    .fold(line[searchRange.first] to searchRange.first) { (maxChar, maxIndex), i ->
-                        if (line[i] > maxChar) line[i] to i else maxChar to maxIndex
-                    }
+                val maxIndex = searchRange
+                    .reduce { acc, i -> if (line[i] > line[acc]) i else acc }
 
-                add(maxChar)
+                add(line[maxIndex])
                 prevIndex = maxIndex
             }
         }
