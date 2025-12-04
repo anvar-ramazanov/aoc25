@@ -5,46 +5,30 @@ class Day4 : Task {
     )
 
     override fun solve_part1(): Any {
-        val input = readInput("Day4").map { it.toCharArray() }
-        return input.indices.sumOf { i ->
-            input[i].indices.count { j ->
-                input[i][j] == '@' && getRolls(input, i, j, directions) < 4
+        val grid = readInput("Day4").map { it.toCharArray() }
+        return grid.indices.sumOf { i ->
+            grid[i].indices.count { j ->
+                grid[i][j] == '@' && grid.getRollsCount(i, j) < 4
             }
         }
     }
 
     override fun solve_part2(): Any {
-        val input = readInput("Day4").map { it.toCharArray() }
-        var answer = 0
-        while (true) {
-            var mutationsPerRun = 0
-            for (i in input.indices) {
-                for (j in input[i].indices) {
-                    if (input[i][j] == '@' && getRolls(input, i, j, directions) < 4) {
-                        mutationsPerRun++
-                        input[i][j] = 'X'
+        val grid = readInput("Day4").map { it.toCharArray() }
+
+        return generateSequence {
+            grid.indices.sumOf { i ->
+                grid[i].indices.count { j ->
+                    (grid[i][j] == '@' && grid.getRollsCount(i, j) < 4).also { shouldMutate ->
+                        if (shouldMutate) grid[i][j] = 'X'
                     }
                 }
-            }
-            if (mutationsPerRun == 0) break
-            answer += mutationsPerRun
-        }
-
-        return answer
+            }.takeIf { it > 0 }
+        }.sum()
     }
 
-    private fun getRolls(
-        input: List<CharArray>,
-        i: Int,
-        j: Int,
-        directions: List<Pair<Int, Int>>
-    ): Int {
-        return directions.count { (di, dj) ->
-            val newI = i + di
-            val newJ = j + dj
-            newI in input.indices &&
-                    newJ in input[0].indices &&
-                    input[newI][newJ] == '@'
+    private fun List<CharArray>.getRollsCount(i: Int, j: Int): Int =
+        directions.count { (di, dj) ->
+            getOrNull(i + di)?.getOrNull(j + dj) == '@'
         }
-    }
 }
