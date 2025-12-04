@@ -15,7 +15,6 @@ class Day4 : Task {
 
     override fun solve_part2(): Any {
         val grid = readInput("Day4").map { it.toCharArray() }
-
         return generateSequence {
             grid.indices.sumOf { i ->
                 grid[i].indices.count { j ->
