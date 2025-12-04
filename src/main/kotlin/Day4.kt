@@ -1,50 +1,50 @@
 class Day4 : Task {
-    override fun solve_part1(): Any {
-        val input = readInput("Day4")
-        val directions = listOf(
-            Pair(0, 1),
-            Pair(0, -1),
-            Pair(1, 0),
-            Pair(-1, 0),
-            Pair(1, 1),
-            Pair(1, -1),
-            Pair(-1, 1),
-            Pair(-1, -1)
-        )
+    val directions = listOf(
+        0 to 1, 0 to -1, 1 to 0, -1 to 0,
+        1 to 1, 1 to -1, -1 to 1, -1 to -1
+    )
 
-        var answer = 0
-        for ((i, line) in input.withIndex()) {
-            for ((j, cur) in line.withIndex()) {
-               if (cur == '@') {
-                   val rolls = getRolls(input, i, j, directions)
-                   if (rolls < 4) answer++
-               }
+    override fun solve_part1(): Any {
+        val input = readInput("Day4").map { it.toCharArray() }
+        return input.indices.sumOf { i ->
+            input[i].indices.count { j ->
+                input[i][j] == '@' && getRolls(input, i, j, directions) < 4
             }
+        }
+    }
+
+    override fun solve_part2(): Any {
+        val input = readInput("Day4").map { it.toCharArray() }
+        var answer = 0
+        while (true) {
+            var mutationsPerRun = 0
+            for (i in input.indices) {
+                for (j in input[i].indices) {
+                    if (input[i][j] == '@' && getRolls(input, i, j, directions) < 4) {
+                        mutationsPerRun++
+                        input[i][j] = 'X'
+                    }
+                }
+            }
+            if (mutationsPerRun == 0) break
+            answer += mutationsPerRun
         }
 
         return answer
     }
 
     private fun getRolls(
-        input: List<String>,
+        input: List<CharArray>,
         i: Int,
         j: Int,
         directions: List<Pair<Int, Int>>
     ): Int {
-        var rolls = 0
-
-        for (dir in directions) {
-            val newI = (i + dir.first)
-            val newJ = (j + dir.second)
-            if (newI >= 0 && newI < input.size && newJ >= 0 && newJ < input[0].length) {
-                if (input[newI][newJ] == '@') rolls++
-            }
+        return directions.count { (di, dj) ->
+            val newI = i + di
+            val newJ = j + dj
+            newI in input.indices &&
+                    newJ in input[0].indices &&
+                    input[newI][newJ] == '@'
         }
-
-        return rolls
-    }
-
-    override fun solve_part2(): Any {
-        return 0
     }
 }
